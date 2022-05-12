@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-const username = ref('')
+import useProfileStore from '@/stores/profile.js';
+const profileStore = useProfileStore()
 </script>
 
 <template>
@@ -8,7 +8,7 @@ const username = ref('')
     <div class="box">
       <img src="/avatars/avatar.jpg" alt="avatar" />
       <label for="username">Nombre de usuario</label>
-      <input type="text" placeholder="Jane Smith" v-model="username" />
+      <input type="text" placeholder="Jane Smith" v-model="profileStore.username" />
       <button @click="$router.push('/')">Acceder</button>
     </div>
   </div>
