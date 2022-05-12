@@ -1,65 +1,58 @@
-<script>
+<script setup>
+import { ref, reactive, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import MessageItem from '@/components/MessageItem.vue'
 
-export default {
-  components: {
-    MessageItem
-  },
-  data() {
+const route = useRoute()
+
+const end = ref(null)
+const channelId = ref(null)
+const title = ref('')
+const people = reactive([
+  { id: 1, name: 'Tú', avatar: '/avatars/avatar.jpg' },
+  { id: 2, name: 'Jason', avatar: '/avatars/avatar-02.jpg' },
+  { id: 3, name: 'Janet', avatar: '/avatars/avatar-03.jpg' }
+])
+const messages = reactive([
+  { id: 1, author: 1, message: 'Hola 👀', timestamp: new Date().toLocaleTimeString() },
+  { id: 2, author: 2, message: 'Holaaa!!!', timestamp: new Date().toLocaleTimeString() },
+  { id: 3, author: 3, message: 'Hola a todo el mundo 😊', timestamp: new Date().toLocaleTimeString() },
+  { id: 4, author: 3, message: '¿Cómo están?', timestamp: new Date().toLocaleTimeString() },
+  { id: 5, author: 1, message: 'Todo muy bien :D', timestamp: new Date().toLocaleTimeString() },
+  { id: 6, author: 2, message: 'Si, todo bien.', timestamp: new Date().toLocaleTimeString() },
+  { id: 7, author: 1, message: 'Oigan, les escribo para contarles algo... 😌', timestamp: new Date().toLocaleTimeString() },
+  { id: 8, author: 3, message: 'A vers 👀', timestamp: new Date().toLocaleTimeString() },
+  { id: 9, author: 2, message: 'Ahhhh!!', timestamp: new Date().toLocaleTimeString() },
+  { id: 10, author: 2, message: '¡Cuenta ese chismesito yaaaa!', timestamp: new Date().toLocaleTimeString() },
+  { id: 11, author: 1, message: 'Pues, ¡acabamos de lanzar los nuevos cursos de Vue.js!', timestamp: new Date().toLocaleTimeString() },
+])
+
+const messagesView = computed(() => messages.map((message) => {
+  const author = people.find((p) => p.id === message.author)
+  if (!author) return message;
     return {
-      title: 'Nombre del canal',
-      people: [
-        { id: 1, name: 'Tú', avatar: '/avatars/avatar.jpg' },
-        { id: 2, name: 'Jason', avatar: '/avatars/avatar-02.jpg' },
-        { id: 3, name: 'Janet', avatar: '/avatars/avatar-03.jpg' }
-      ],
-      messages: [
-        { id: 1, author: 1, message: 'Hola 👀', timestamp: new Date().toLocaleTimeString() },
-        { id: 2, author: 2, message: 'Holaaa!!!', timestamp: new Date().toLocaleTimeString() },
-        { id: 3, author: 3, message: 'Hola a todo el mundo 😊', timestamp: new Date().toLocaleTimeString() },
-        { id: 4, author: 3, message: '¿Cómo están?', timestamp: new Date().toLocaleTimeString() },
-        { id: 5, author: 1, message: 'Todo muy bien :D', timestamp: new Date().toLocaleTimeString() },
-        { id: 6, author: 2, message: 'Si, todo bien.', timestamp: new Date().toLocaleTimeString() },
-        { id: 7, author: 1, message: 'Oigan, les escribo para contarles algo... 😌', timestamp: new Date().toLocaleTimeString() },
-        { id: 8, author: 3, message: 'A vers 👀', timestamp: new Date().toLocaleTimeString() },
-        { id: 9, author: 2, message: 'Ahhhh!!', timestamp: new Date().toLocaleTimeString() },
-        { id: 10, author: 2, message: '¡Cuenta ese chismesito yaaaa!', timestamp: new Date().toLocaleTimeString() },
-        { id: 11, author: 1, message: 'Pues, ¡acabamos de lanzar los nuevos cursos de Vue.js!', timestamp: new Date().toLocaleTimeString() },        
-      ]
-    }
-  },
-  computed: {
-    messagesView() {
-      return this.messages.map((message) => {
-        const author = this.people.find((p) => p.id === message.author)
-        if (!author) return message;
-        return {
-          ...message,
-          author,
-          self: author.id === 1
-        }
-      })
-    }
-  },
-  watch: {
-    '$route.params.id': {
-      immediate: true,
-      handler() {
-        this.scrollToBottom()
-      }
-    }
-  },
-  mounted() {
-    this.scrollToBottom()
-  },
-  methods: {
-    scrollToBottom() {
-      this.$refs?.end?.scrollIntoView({
-          behavior: 'smooth'
-      })
-    }
-  },
+    ...message,
+    author,
+    self: author.id === 1
+  }
+}))
+
+const scrollToBottom = () => {
+  end.value?.scrollIntoView({
+    behavior: 'smooth'
+  })
 }
+
+watch(
+  () => route.params.id,
+  (id) => {
+    channelId.value = id
+    scrollToBottom()
+  },
+  { immediate: true }
+)
+
+scrollToBottom()
 </script>
 
 <template>
