@@ -10,5 +10,14 @@ export default defineStore('channels', {
       { id: 5, name: 'Non-work', messages: null },
       { id: 6, name: 'Atención a clientes', messages: 120 }
     ]
-  })
+  }),
+  getters: {
+    getChannels: (state) => (search) => {
+      return state.channels
+        .filter((channel) => channel.name
+          .toLocaleLowerCase()
+          .includes(search.toLocaleLowerCase())
+        )
+    }
+  }
 })
